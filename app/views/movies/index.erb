@@ -1,0 +1,165 @@
+<script src="https://www.youtube.com/iframe_api" type="text/javascript"></script>
+<script type="text/javascript">
+    $(function(){
+        $('.thumbnail_image').hide();
+    })
+
+    var newPlayer;
+    var player;
+    var current_status = -1;
+    var view = false;
+    var done = false;
+    var update_interval = null;
+    var status_interval = null;
+    var youtubeId = null;
+
+    function createPlayer(val){
+        youtubeId = val;
+        //$('#join_'+youtubeId).hide();
+        newPlayer = new YT.Player(val, {
+            videoId: val,
+            width: 270,
+            height: 195,
+            playerVars: {
+                rel: 0,
+                enablejsapi: 1
+            },
+            events: {
+                onReady: onPlayerReady,
+                onStateChange: onPlayerStateChange
+            }
+        });
+    }
+
+    function onYouTubeIframeAPIReady(){
+            <% @movies.each do |movie| %>
+                createPlayer('<%= movie.youtube %>');
+            <% end %>
+        }
+
+    function getStatus() {
+        var event=[];
+        event.data = player.getPlayerState();
+        onPlayerStateChange(event);
+    }
+
+    function onPlayerReady(event) {
+        readyState();
+        if (event) {
+            player = event.target;
+            status_interval = setInterval("getStatus()", 999);
+        }
+    }
+
+    function updateytplayerInfo() {
+        if (player && player.getCurrentTime() != 0) {
+            left_second = Math.round( player.getDuration() - player.getCurrentTime() ) - 1;
+            if(left_second > 0 && !view){
+                playState(left_second);
+            } else{
+                next();
+            }
+        }
+    }
+
+    function onPlayerStateChange(event) {
+        if (event.data == YT.PlayerState.PLAYING && !done) {
+            done = true;
+            if (status_interval != null) {
+                clearInterval(status_interval);
+            }
+            update_interval = setInterval("updateytplayerInfo()", 999);
+            updateytplayerInfo();
+        }
+        if (event.data == YT.PlayerState.ENDED) {
+            next();
+        }
+
+        current_status = event.data;
+    }
+
+    function next(){
+        clearInterval(update_interval);
+        $('#join_'+youtubeId).show();
+        $('#noJoin_'+youtubeId).hide();
+    }
+
+    function readyState() {}
+
+    function playState(leftsec) {
+        $('#left_sec').html(leftsec);
+
+        $('#state_ready').hide();
+        $('#state_playing').show();
+        $('#state_submit').hide();
+    }
+
+
+</script>
+
+<header class="navbar navbar-fixed-top navbar-inverse">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="brand">Beauty Is Beautiful  - pochliy -</a>
+            <div class="nab-collapse">
+                <ul class="nav pull-right">
+                    <!-- 検索フォーム -->
+                    <!--<form class="navbar-search pull-left" action="/movies" method="GET">-->
+                    <%= form_tag :action => 'search' do  %>
+                        <!--<input type="text" class="search-query" placeholder="Search">-->
+                        <%= text_field_tag "name",:class => "search-query" , :placeholder => "Search" %>
+                    <% end %>
+                    <!--</form>-->
+                    <li><%= link_to "Home", '/movies' %></li>
+                    <li><%= link_to "Help", '/help' %></li>
+                    <li><%= link_to "Signed", '#' %></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <br>
+
+    <div id="main">
+        <div id="grid-content">
+            <% @movies.each do |movie| %>
+                <div id="grid-<%= movie.id %>" class="chapter">
+                    <p class="thumbnail_image">
+                        <a href="#" class="linkImg">
+                            <img alt="" src="/system/thumbnails/e4/35/04/small_e43504a41de64bfb62bda52b8aec1964.1.jpg">
+                        </a>
+                        <div class="video-container">
+                            <div id="<%= movie.youtube %>"></div>
+                        </div>
+                    </p>
+                    <p class="title">
+                        <a href="#"><%= movie.name %></a>
+                    </p>
+                    <p>
+                        <!--<button type="submit" class="btn btn-primary" id="join_<%= movie.youtube %>" style="height:20px;font-size: 12px;padding-top: 0px">Entry</button>-->
+                        <a href="#" class="btn btn-primary" style="height:15px;font-size: 10px;padding-top: 0px" target="_blank">Entry</a>
+                        <a href="<%= movie.monipla %>" class=""><%= image_tag 'BtnMP01.png' %></a>
+                        <a href="<%= movie.rakuten %>" class="btn btn-danger" style="height:15px;font-size: 10px;padding-top: 0px" target="_blank">楽天</a>
+                        <a href="<%= movie.amazon %>" class="btn btn-inverse" style="height:15px;font-size: 10px;padding-top: 0px" target="_blank">Amazon</a>
+
+                    </p>
+                    <table>
+                        <tbody>
+                        <tr>
+                            <th style="font-size: smaller">TIME</th>
+                            <td class="time">00:00:15</td>
+                        </tr>
+                        <tr>
+                            <th style="font-size: smaller">CAMPANY</th>
+                            <td class="tag">資生堂</td>
+                        </tr>
+                        </tbody></table>
+                    <input class="chapter_id" id="chapter_id" name="chapter_id" type="hidden" value="30576">
+                    <input class="src_video_id" id="src_video_id" name="src_video_id" type="hidden" value="2247380">
+                </div>
+            <% end %>
+        </div>
+    </div>
+</div>

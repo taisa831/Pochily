@@ -1,0 +1,34 @@
+<header class="navbar navbar-fixed-top navbar-inverse">
+    <div class="navbar-inner">
+        <div class="container" style="position: absolute">
+            <a class="brand">管理画面</a>
+        </div>
+    </div>
+</header>
+
+<div class="container" style="padding: 20px 0px;position: absolute">
+    <table class="table table-striped table-bordered table-hover">
+        <tr>
+            <th></th>
+            <th>ID</th>
+            <th>名前</th>
+            <th>アマゾン</th>
+            <th>モニプラ</th>
+            <th>楽天</th>
+            <th>YouTube</th>
+            <th>承認/非承認</th>
+        </tr>
+    <% @movies.each do |movie| %>
+        <tr>
+            <td><%= check_box 'movie', 'approvalFlg', {}, true, false %></td>
+            <td><%= movie.id %></td>
+            <td><%= movie.name %></td>
+            <td><%= link_to movie.amazon,movie.amazon %></td>
+            <td><%= link_to movie.monipla,movie.monipla %></td>
+            <td><%= link_to movie.monipla,movie.rakuten %></td>
+            <td><%= link_to 'http://www.youtube.com/watch?v='+movie.approval_flg.to_s,'http://www.youtube.com/watch?v='+movie.approval_flg.to_s %></td>
+            <td><%= movie.approval_flg ? '承認' : '非承認' %></td>
+        </tr>
+    <% end %>
+    </table>
+</div>

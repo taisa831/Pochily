@@ -1,0 +1,48 @@
+test
+
+<script type="text/javascript">
+    $(function(){
+        // #container配下のdivがグリットレイアウトで並びます
+        $("#container").vgrid({
+            easing: "easeOutQuint",
+            time: 500,
+            delay: 20,
+            fadeIn: {
+                time: 300,
+                delay: 50
+            }
+        });
+    });
+</script>
+
+<style type="text/css">
+    #grid-content div {
+        width: 150px;
+        height: auto;
+        border: 1px solid #bbb;
+        background-color: #eee;
+        margin: 5px;
+        padding: 3px;
+    }
+</style>
+
+<div id="container">
+<div id="grid-content" width="auto">
+    <div id="grid-a">
+        <h3>AAA</h3>
+        <p><img src="http://dummyimage.com/150x120" alt="dummy" /></p>
+    </div>
+    <div id="grid-b">
+        <h3>BBB</h3>
+        <p><img src="http://dummyimage.com/150x60" alt="dummy" /></p>
+    </div>
+    <div id="grid-c">
+        <h3>BBB</h3>
+        <p><img src="http://dummyimage.com/150x60" alt="dummy" /></p>
+    </div>
+    <div id="grid-d">
+        <h3>BBB</h3>
+        <p><img src="http://dummyimage.com/150x60" alt="dummy" /></p>
+    </div>
+</div>
+</div>
